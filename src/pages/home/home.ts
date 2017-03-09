@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { WeatherService } from '../../services/weather';
 import { Geolocation } from 'ionic-native';
-import { SearchPage } from '../search/search';
+import { WeatherModel } from '../../models/weather-model';
 
 @Component({
   selector: 'page-home',
@@ -10,12 +10,14 @@ import { SearchPage } from '../search/search';
 })
 
 export class HomePage {
-  rootSearch = SearchPage;
-
   private tempo: any;
 
   constructor(public navCtrl: NavController, public localWeather: WeatherService) {
     this.tempo = localWeather;
+
+    let model:WeatherModel = new WeatherModel('Guarujá');
+
+    console.log(model.getCity());
 
     Geolocation.getCurrentPosition().then((resp) => {
       // resp.coords.latitude
@@ -34,6 +36,10 @@ export class HomePage {
       console.log("COORDENADAS: ", data.coords);
       this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
     });
+  }
+
+  public updateHome(city: string) {
+    console.log('atualizar para cidade:', city);
   }
 
 }

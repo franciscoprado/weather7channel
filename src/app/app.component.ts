@@ -3,6 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
+import { WeatherModel } from '../models/weather-model';
 
 @Component({
   templateUrl: 'app.html'
@@ -36,6 +37,7 @@ export class MyApp {
   }
 
   updateWeather(city: any) {
-    console.log(city);
+
+    new WeatherModel(city);
   }
 }

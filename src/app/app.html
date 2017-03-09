@@ -20,7 +20,7 @@
         </ion-toolbar>
 
         <ion-list>
-            <ion-item *ngFor="let item of items" (click)="updateWeather(item)">
+            <ion-item *ngFor="let item of items" (click)="updateWeather(item)" menuToggle="rightMenu">
                 {{ item }}
             </ion-item>
         </ion-list>

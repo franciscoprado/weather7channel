@@ -3,15 +3,13 @@ import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
-import { SearchPage } from '../pages/search/search';
 import { WeatherService } from '../services/weather';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    CityPage,
-    SearchPage
+    CityPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -20,8 +18,7 @@ import { WeatherService } from '../services/weather';
   entryComponents: [
     MyApp,
     HomePage,
-    CityPage,
-    SearchPage
+    CityPage
   ],
   providers: [WeatherService]
   //providers:[{provide: ErrorHandler, useClass: IonicErrorHandler}]
