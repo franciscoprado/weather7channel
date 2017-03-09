@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { Events } from 'ionic-angular';
 
 @Injectable()
 export class WeatherService {
@@ -11,7 +12,8 @@ export class WeatherService {
 
     public temp: any;
 
-    constructor(http: Http) {
+    constructor(http: Http, public events: Events) {
+        this.events = events;
         this.http = http;
     }
 
@@ -21,6 +23,7 @@ export class WeatherService {
         this.http.get(url)
             .subscribe(res => {
                 this.data = res.json();
+                this.temp = this.data.list[0].main.temp;
                 console.log("RESULTADO: ", this.data);
             }, error => {
                 console.log(error);
@@ -34,6 +37,7 @@ export class WeatherService {
           .subscribe(res => {
               this.data = res.json();
               this.temp = this.data.list[0].main.temp;
+              this.events.publish('forecastLoaded', '200');
               console.log("RESULTADO: ", this.data);
           }, error => {
               console.log(error);

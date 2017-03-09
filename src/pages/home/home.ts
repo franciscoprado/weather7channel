@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Events, NavController, LoadingController } from 'ionic-angular';
+import { Events, NavController, LoadingController, AlertController } from 'ionic-angular';
 import { WeatherService } from '../../services/weather';
 import { Geolocation } from 'ionic-native';
 
@@ -11,8 +11,9 @@ import { Geolocation } from 'ionic-native';
 export class HomePage {
   private tempo: any;
   private loader: any;
+  private use_geo: boolean = true;
 
-  constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController) {
+  constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController, private alertCtrl: AlertController) {
     this.tempo = localWeather;
 
     this.addChangeCityEventListener(events);
@@ -22,8 +23,14 @@ export class HomePage {
 
   addChangeCityEventListener(events: Events) {
     events.subscribe('changeCity', (city) => {
+      this.tempo.obterPrevisaoPorCidade(city);
+      this.desabilitarPrevisaoPorGeolocalizacao();
       console.log('mudou para', city);
     });
+  }
+
+  desabilitarPrevisaoPorGeolocalizacao() {
+    this.use_geo = false;
   }
 
   addPreloaderEventListener(events: Events) {
@@ -34,7 +41,7 @@ export class HomePage {
 
     events.subscribe('forecastLoaded', (status) => {
       if (status == '200') {
-
+        this.loader.dismiss();
       }
     });
   }
@@ -44,7 +51,12 @@ export class HomePage {
       // resp.coords.latitude
       // resp.coords.longitude
     }).catch((error) => {
-      this.tempo.obterPrevisaoPorCidade();
+      let alert = this.alertCtrl.create({
+        title: 'Erro',
+        subTitle: 'Não foi possível obter a previsão do tempo. Verifique se o recurso da geolocalização está ativada.',
+        buttons: ['Dismiss']
+      });
+      alert.present();
       console.log('Error getting location', error);
     });
 
@@ -55,7 +67,9 @@ export class HomePage {
       // data.coords.latitude
       // data.coords.longitude
       console.log("COORDENADAS: ", data.coords);
-      this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
+
+      if (this.use_geo)
+        this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
     });
   }
 
