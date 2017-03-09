@@ -35,4 +35,5 @@ export class HomePage {
       this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
     });
   }
+
 }

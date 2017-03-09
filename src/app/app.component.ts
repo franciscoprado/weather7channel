@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Platform } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
@@ -9,9 +9,11 @@ import { CityPage } from '../pages/city/city';
 })
 
 export class MyApp {
+  @ViewChild(Nav) nav: Nav;
   rootPage = HomePage;
   home: any;
   city: any;
+  items: string[] = [];
 
   constructor(platform: Platform) {
     this.home = HomePage;
@@ -27,5 +29,13 @@ export class MyApp {
 
   openPage(opcao) {
     this.rootPage = opcao;
+  }
+
+  getItems(ev: any) {
+    this.items = ['São Paulo', 'Rio de Janeiro', 'Salvador', 'Belo Horizonte'];
+  }
+
+  updateWeather(city: any) {
+    console.log(city);
   }
 }
