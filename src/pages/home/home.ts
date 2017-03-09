@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { Events, NavController } from 'ionic-angular';
 import { WeatherService } from '../../services/weather';
 import { Geolocation } from 'ionic-native';
-import { WeatherModel } from '../../models/weather-model';
 
 @Component({
   selector: 'page-home',
@@ -12,12 +11,12 @@ import { WeatherModel } from '../../models/weather-model';
 export class HomePage {
   private tempo: any;
 
-  constructor(public navCtrl: NavController, public localWeather: WeatherService) {
+  constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events) {
     this.tempo = localWeather;
 
-    let model:WeatherModel = new WeatherModel('Guarujá');
-
-    console.log(model.getCity());
+    events.subscribe('changeCity', (city) => {
+      console.log('mudou para', city);
+    });
 
     Geolocation.getCurrentPosition().then((resp) => {
       // resp.coords.latitude

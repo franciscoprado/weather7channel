@@ -1,9 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform } from 'ionic-angular';
+import { Nav, Platform, Events } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
-import { WeatherModel } from '../models/weather-model';
 
 @Component({
   templateUrl: 'app.html'
@@ -16,9 +15,10 @@ export class MyApp {
   city: any;
   items: string[] = [];
 
-  constructor(platform: Platform) {
+  constructor(platform: Platform, public events: Events) {
     this.home = HomePage;
     this.city = CityPage;
+    this.events = events;
 
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
@@ -36,8 +36,7 @@ export class MyApp {
     this.items = ['São Paulo', 'Rio de Janeiro', 'Salvador', 'Belo Horizonte'];
   }
 
-  updateWeather(city: any) {
-
-    new WeatherModel(city);
+  changeCity(city: any) {
+    this.events.publish('changeCity', city);
   }
 }
