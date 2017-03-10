@@ -8,8 +8,6 @@ export class FormatDatePipe implements PipeTransform {
         let fdate: string = value.getDate().toString();
         let fmonth: string = value.getMonth().toString();
 
-        console.log(value);
-
         if (date < 10) {
             fdate = '0' + date.toString();
         }

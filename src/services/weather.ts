@@ -89,8 +89,6 @@ export class WeatherService {
                         'max': max
                     })
                 }
-
-                console.log("PREVISÃO: ", this.forecasts);
             }, error => {
                 console.log(error);
             });

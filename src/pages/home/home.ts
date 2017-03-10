@@ -32,7 +32,6 @@ export class HomePage {
     events.subscribe('changeCity', (city) => {
       this.tempo.obterPrevisaoPorCidade(city);
       this.desabilitarPrevisaoPorGeolocalizacao();
-      console.log('mudou para', city);
     });
   }
 
@@ -82,6 +81,10 @@ export class HomePage {
       if (this.use_geo)
         this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
     });
+  }
+
+  addFavorite(city: string) {
+    console.log('FAVORITAR', city);
   }
 
 }

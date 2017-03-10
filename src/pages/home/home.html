@@ -32,21 +32,21 @@
                 <p>PRÓXIMOS DIAS</p>
             </ion-card-title>
             <ion-row *ngFor="let forecast of localWeather.forecasts">
-                <ion-col>
+                <ion-col col-2>
                     <strong>{{ forecast.dt | formatDate }}</strong>
                 </ion-col>
                 <ion-col right text-right>
                     {{ forecast.day | formatTemperature }}
-                    <ion-note>{{ forecast.min | formatTemperature }} / {{ forecast.max | formatTemperature }}</ion-note>
+                    <ion-note>Min.: {{ forecast.min | formatTemperature }} / Máx.: {{ forecast.max | formatTemperature }}</ion-note>
                 </ion-col>
             </ion-row>
         </ion-card-content>
     </ion-card>
 
-    <button ion-button icon-left clear small>
-    <ion-icon name="star-outline"></ion-icon>
-    <div>Favorito</div>
-  </button>
+    <button ion-button icon-left clear small (click)="addFavorite(localWeather.local)" [hidden]="localWeather.local == 'Seu local'">
+        <ion-icon name="star-outline"></ion-icon>
+        <p>ADICIONAR AOS FAVORITOS</p>
+    </button>
 
     <!-- /Previsão de Tempo por Geolocalização -->
 
