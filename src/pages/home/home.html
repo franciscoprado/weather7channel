@@ -28,9 +28,9 @@
 
     <ion-card>
         <ion-card-content>
-            <ion-row>
-                <strong>Previsão para os próximos 5 dias</strong>
-            </ion-row>
+            <ion-card-title>
+                <p>PRÓXIMOS DIAS</p>
+            </ion-card-title>
             <ion-row *ngFor="let forecast of localWeather.forecasts">
                 <ion-col>
                     <strong>{{ forecast.dt | formatDate }}</strong>
