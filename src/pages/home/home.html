@@ -21,9 +21,9 @@
     <!-- Previsão de Tempo por Geolocalização -->
 
     <div text-center>
-        <h3>[nomeDaCidade]</h3>
-        <h5>[clima]</h5>
-        <h1>{{ localWeather.temp }}º</h1>
+        <h3>{{ localWeather.local }}</h3>
+        <h5>{{ localWeather.weather }}</h5>
+        <h1>{{ localWeather.temp | formatTemperature }}</h1>
     </div>
 
     <ion-card>

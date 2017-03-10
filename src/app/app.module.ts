@@ -5,12 +5,14 @@ import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
 import { WeatherService } from '../services/weather';
 import { CityListService } from '../services/city-list';
+import { FormatTemperaturePipe } from '../utils/format-temperature';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
-    CityPage
+    CityPage,
+    FormatTemperaturePipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)
