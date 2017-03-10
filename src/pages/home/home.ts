@@ -124,7 +124,9 @@ export class HomePage {
     });
 
     let options = {
-      enableHighAccuracy: true
+      enableHighAccuracy: true,
+      timeout: 3000,
+      maximumAge: 3000
     };
     let watch = Geolocation.watchPosition(options);
 

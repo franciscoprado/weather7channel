@@ -1,8 +1,12 @@
 <ion-menu id="leftMenu" [content]="conteudo" side="left" type="overlay">
     <ion-content>
         <ion-list>
-            <button ion-item (click)="openPage(home)" menuClose>Favoritos</button>
-            <ion-item *ngFor="let bookmark of bookmarks" (click)="changeCity(bookmark)" menuClose>{{ bookmark }}</ion-item>
+            <button ion-item (click)="openPage(home)" menuClose>
+                <strong>Favoritos</strong>
+            </button>
+            <ion-item *ngFor="let bookmark of bookmarks" (click)="changeCity(bookmark)" menuClose>
+                {{ bookmark }}
+            </ion-item>
         </ion-list>
     </ion-content>
 </ion-menu>
