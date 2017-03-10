@@ -14,6 +14,7 @@ export class WeatherService {
     public local: any = "Seu local";
     public weather: any;
     public temp: any;
+    public forecasts: Array<Object> = [];
 
     constructor(http: Http, public events: Events) {
         this.events = events;
@@ -34,7 +35,7 @@ export class WeatherService {
                 let latitude: number = address.results[0].geometry.location.lat;
                 let longitude: number = address.results[0].geometry.location.lng;
 
-                console.log("GEOCODE: ", latitude, longitude);
+                //console.log("GEOCODE: ", latitude, longitude);
 
                 this.obterTempoAtual(latitude, longitude);
             }, error => {
@@ -55,7 +56,7 @@ export class WeatherService {
                 this.data = res.json();
                 this.temp = this.data.main.temp;
                 this.weather = this.data.weather[0].description;
-                console.log("CURRENT: ", this.data);
+                //console.log("CURRENT: ", this.data);
 
                 this.obterPrevisao(latitude, longitude);
             }, error => {
@@ -67,14 +68,37 @@ export class WeatherService {
     obterPrevisao(latitude: any, longitude: any) {
         let url = this.url_forecast.replace('{LATITUDE}', latitude).replace('{LONGITUDE}', longitude) + this.WEATHER_API_KEY;
 
+        this.forecasts = [];
+
         this.http.get(url)
             .subscribe(res => {
                 this.data = res.json();
                 //this.temp = this.data.main.temp;
                 this.events.publish('forecastLoaded', '200');
-                console.log("PREVISÃO: ", this.data);
+
+                for (let i = 0; i < this.data.list.length; i++) {
+                    let dt: Date = this.converterTimestamp(this.data.list[i].dt);
+                    let day: number = this.data.list[i].temp.day;
+                    let min: number = this.data.list[i].temp.min;
+                    let max: number = this.data.list[i].temp.max;
+
+                    this.forecasts.push({
+                        'dt': dt,
+                        'day': day,
+                        'min': min,
+                        'max': max
+                    })
+                }
+
+                console.log("PREVISÃO: ", this.forecasts);
             }, error => {
                 console.log(error);
             });
+    }
+
+    converterTimestamp(dt: number):Date {
+        var date = new Date(dt * 1000);
+
+        return date;
     }
 }

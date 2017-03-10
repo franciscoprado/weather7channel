@@ -6,13 +6,15 @@ import { CityPage } from '../pages/city/city';
 import { WeatherService } from '../services/weather';
 import { CityListService } from '../services/city-list';
 import { FormatTemperaturePipe } from '../utils/format-temperature';
+import { FormatDatePipe } from '../utils/format-date';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
     CityPage,
-    FormatTemperaturePipe
+    FormatTemperaturePipe,
+    FormatDatePipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)

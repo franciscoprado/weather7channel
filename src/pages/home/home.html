@@ -29,15 +29,15 @@
     <ion-card>
         <ion-card-content>
             <ion-row>
-                <ion-col>[Data]</ion-col>
+                <strong>Previsão para os próximos 5 dias</strong>
             </ion-row>
-            <ion-row>
+            <ion-row *ngFor="let forecast of localWeather.forecasts">
                 <ion-col>
-                    <strong>[Dia da semana]</strong> Hoje
+                    <strong>{{ forecast.dt | formatDate }}</strong>
                 </ion-col>
                 <ion-col right text-right>
-                    [máxº]
-                    <ion-note>[mínº]</ion-note>
+                    {{ forecast.day | formatTemperature }}
+                    <ion-note>{{ forecast.min | formatTemperature }} / {{ forecast.max | formatTemperature }}</ion-note>
                 </ion-col>
             </ion-row>
         </ion-card-content>
