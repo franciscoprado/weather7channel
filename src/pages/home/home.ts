@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Events, NavController, LoadingController, AlertController } from 'ionic-angular';
+import { Events, NavController, LoadingController, AlertController, Platform } from 'ionic-angular';
 import { WeatherService } from '../../services/weather';
-import { Geolocation } from 'ionic-native';
+import { Geolocation, SQLite } from 'ionic-native';
 
 @Component({
   selector: 'page-home',
@@ -13,13 +13,53 @@ export class HomePage {
   private loader: any;
   private use_geo: boolean = true;
 
-  constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController, private alertCtrl: AlertController) {
+  public bookmarks: Array<any> = ['teste', 'teste 2'];
+  public database: SQLite;
+
+  constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController, private alertCtrl: AlertController, private platform: Platform) {
     this.tempo = localWeather;
 
+    this.initDatabase();
     this.addChangeCityEventListener(events);
     this.addPreloaderEventListener(events);
     this.addLoadingForecastEventListener(events);
     this.addGeolocationSupport();
+  }
+
+  initDatabase() {
+    this.platform.ready().then(() => {
+        this.database = new SQLite();
+        this.database.openDatabase({name: "data.db", location: "default"}).then(() => {
+            this.refreshData();
+        }, (error) => {
+            console.log("ERROR: ", error);
+        });
+    });
+  }
+
+  refreshData() {
+      this.database.executeSql("SELECT * FROM bookmarks", []).then((data) => {
+          this.bookmarks = [];
+
+          if (data.rows.length > 0) {
+              for(var i = 0; i < data.rows.length; i++) {
+                  this.bookmarks.push({id: data.rows.item(i).id, city: data.rows.item(i).city});
+              }
+          }
+
+      }, (error) => {
+          console.log("ERROR: " + JSON.stringify(error));
+      });
+  }
+
+  addFavorite(city: string) {
+    console.log('FAVORITAR', city);
+
+    this.database.executeSql("INSERT INTO bookmarks (city) VALUES ('" + city + "')", []).then((data) => {
+        console.log("INSERTED: " + JSON.stringify(data));
+    }, (error) => {
+        console.log("ERROR: " + JSON.stringify(error.err));
+    });
   }
 
   addLoadingForecastEventListener(events: Events) {
@@ -64,7 +104,7 @@ export class HomePage {
       let alert = this.alertCtrl.create({
         title: 'Erro',
         subTitle: 'Não foi possível obter a previsão do tempo. Verifique se o recurso da geolocalização está ativada.',
-        buttons: ['Dismiss']
+        buttons: ['Fechar']
       });
       alert.present();
       console.log('Error getting location', error);
@@ -81,10 +121,6 @@ export class HomePage {
       if (this.use_geo)
         this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
     });
-  }
-
-  addFavorite(city: string) {
-    console.log('FAVORITAR', city);
   }
 
 }

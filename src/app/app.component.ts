@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform, Events } from 'ionic-angular';
-import { StatusBar, Splashscreen } from 'ionic-native';
+import { StatusBar, Splashscreen, SQLite } from 'ionic-native';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
 import { CityListService } from '../services/city-list';
@@ -27,6 +27,22 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       Splashscreen.hide();
+
+      let db = new SQLite();
+
+      db.openDatabase({
+          name: "data.db",
+          location: "default"
+      }).then(() => {
+          db.executeSql("CREATE TABLE IF NOT EXISTS bookmarks (id INTEGER PRIMARY KEY AUTOINCREMENT, city VARCHAR(250))", {}).then((data) => {
+              console.log("TABLE CREATED: ", data);
+          }, (error) => {
+              console.error("Unable to execute sql", error);
+          })
+      }, (error) => {
+          console.error("Unable to open database", error);
+      });
+
     });
   }
 
