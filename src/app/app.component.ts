@@ -26,6 +26,7 @@ export class MyApp {
     this.cityList = cityList;
 
     this.createDatabase();
+    this.addUpdateBookmarksEventListener();
   }
 
   createDatabase() {
@@ -53,6 +54,12 @@ export class MyApp {
     });
 
     this.initDatabase();
+  }
+
+  addUpdateBookmarksEventListener() {
+    this.events.subscribe('updateBookmarks', () => {
+        this.refreshData();
+    });
   }
 
   initDatabase() {

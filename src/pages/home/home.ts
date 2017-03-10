@@ -13,6 +13,7 @@ export class HomePage {
   private loader: any;
   private use_geo: boolean = true;
 
+  public already_bookmarked: boolean;
   public database: SQLite;
 
   constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController, private alertCtrl: AlertController, private platform: Platform) {
@@ -36,13 +37,40 @@ export class HomePage {
     });
   }
 
-  addFavorite(city: string) {
-    console.log('FAVORITAR', city);
+  addBookmark(city: string) {
+    this.already_bookmarked = true;
+
+    this.showAlert();
 
     this.database.executeSql("INSERT INTO bookmarks (city) VALUES ('" + city + "')", []).then((data) => {
         console.log("INSERTED: " + JSON.stringify(data));
     }, (error) => {
         console.log("ERROR: " + JSON.stringify(error.err));
+    });
+
+    this.events.publish('updateBookmarks', city);
+  }
+
+  showAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Sucesso!',
+      subTitle: 'O endereço atual foi adicionado à lista de favoritos.',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
+
+  checkIsBookmarked(city: string) {
+    this.database.executeSql("SELECT * FROM bookmarks WHERE city LIKE '" + city + "'", []).then((data) => {
+        if (data.rows.length > 0) {
+            this.already_bookmarked = true;
+        }
+        else {
+          this.already_bookmarked = false;
+        }
+
+    }, (error) => {
+        console.log("ERROR: " + JSON.stringify(error));
     });
   }
 
@@ -56,6 +84,7 @@ export class HomePage {
     events.subscribe('changeCity', (city) => {
       this.tempo.obterPrevisaoPorCidade(city);
       this.desabilitarPrevisaoPorGeolocalizacao();
+      this.checkIsBookmarked(city);
     });
   }
 
