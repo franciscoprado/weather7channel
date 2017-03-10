@@ -13,7 +13,6 @@ export class HomePage {
   private loader: any;
   private use_geo: boolean = true;
 
-  public bookmarks: Array<any> = ['teste', 'teste 2'];
   public database: SQLite;
 
   constructor(public navCtrl: NavController, public localWeather: WeatherService, public events: Events, public loadingCtrl: LoadingController, private alertCtrl: AlertController, private platform: Platform) {
@@ -30,26 +29,11 @@ export class HomePage {
     this.platform.ready().then(() => {
         this.database = new SQLite();
         this.database.openDatabase({name: "data.db", location: "default"}).then(() => {
-            this.refreshData();
+            console.log('Banco aberto com sucesso.');
         }, (error) => {
             console.log("ERROR: ", error);
         });
     });
-  }
-
-  refreshData() {
-      this.database.executeSql("SELECT * FROM bookmarks", []).then((data) => {
-          this.bookmarks = [];
-
-          if (data.rows.length > 0) {
-              for(var i = 0; i < data.rows.length; i++) {
-                  this.bookmarks.push({id: data.rows.item(i).id, city: data.rows.item(i).city});
-              }
-          }
-
-      }, (error) => {
-          console.log("ERROR: " + JSON.stringify(error));
-      });
   }
 
   addFavorite(city: string) {
@@ -110,7 +94,10 @@ export class HomePage {
       console.log('Error getting location', error);
     });
 
-    let watch = Geolocation.watchPosition();
+    let options = {
+      enableHighAccuracy: true
+    };
+    let watch = Geolocation.watchPosition(options);
 
     watch.subscribe((data) => {
       // data can be a set of coordinates, or an error (if an error occurred).

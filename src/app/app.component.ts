@@ -16,13 +16,20 @@ export class MyApp {
   city: any;
   items: string[] = [];
 
-  constructor(platform: Platform, public events: Events, public cityList: CityListService) {
+  public database: SQLite;
+  public bookmarks: Array<string> = [];
+
+  constructor(private platform: Platform, public events: Events, public cityList: CityListService) {
     this.home = HomePage;
     this.city = CityPage;
     this.events = events;
     this.cityList = cityList;
 
-    platform.ready().then(() => {
+    this.createDatabase();
+  }
+
+  createDatabase() {
+    this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
@@ -44,6 +51,34 @@ export class MyApp {
       });
 
     });
+
+    this.initDatabase();
+  }
+
+  initDatabase() {
+    this.platform.ready().then(() => {
+        this.database = new SQLite();
+        this.database.openDatabase({name: "data.db", location: "default"}).then(() => {
+            this.refreshData();
+        }, (error) => {
+            console.log("ERROR: ", error);
+        });
+    });
+  }
+
+  refreshData() {
+      this.database.executeSql("SELECT * FROM bookmarks", []).then((data) => {
+          this.bookmarks = [];
+
+          if (data.rows.length > 0) {
+              for (var i = 0; i < data.rows.length; i++) {
+                  this.bookmarks.push(data.rows.item(i).city);
+              }
+          }
+
+      }, (error) => {
+          console.log("ERROR: " + JSON.stringify(error));
+      });
   }
 
   openPage(opcao) {

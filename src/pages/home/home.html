@@ -43,10 +43,6 @@
         </ion-card-content>
     </ion-card>
 
-    <ion-card>
-        debug DB {{ bookmarks }}
-    </ion-card>
-
     <button ion-button icon-left clear small (click)="addFavorite(localWeather.local)" [hidden]="localWeather.local == 'Seu local'">
         <ion-icon name="star-outline"></ion-icon>
         <p>ADICIONAR AOS FAVORITOS</p>
