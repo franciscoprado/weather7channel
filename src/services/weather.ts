@@ -7,8 +7,8 @@ export class WeatherService {
     private http: any;
     private data: any;
     private readonly WEATHER_API_KEY: string = "7d29c85b415d4474c680c00a31a60eb9";
-    private url_current_weather = "http://api.openweathermap.org/data/2.5/weather?lat={LATITUDE}&lon={LONGITUDE}&units=metric&appid="
-    private url_forecast: string = "http://api.openweathermap.org/data/2.5/forecast/daily?lat={LATITUDE}&lon={LONGITUDE}&cnt=5&units=metric&appid=";
+    private url_current_weather = "http://api.openweathermap.org/data/2.5/weather?lang=pt&lat={LATITUDE}&lon={LONGITUDE}&units=metric&appid="
+    private url_forecast: string = "http://api.openweathermap.org/data/2.5/forecast/daily?lang=pt&lat={LATITUDE}&lon={LONGITUDE}&cnt=5&units=metric&appid=";
     private url_google_geocoding: string = "https://maps.googleapis.com/maps/api/geocode/json?address={ENDERECO}"
 
     public local: any = "Seu local";
