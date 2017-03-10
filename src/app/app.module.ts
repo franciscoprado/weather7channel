@@ -4,6 +4,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { CityPage } from '../pages/city/city';
 import { WeatherService } from '../services/weather';
+import { CityListService } from '../services/city-list';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,7 @@ import { WeatherService } from '../services/weather';
     HomePage,
     CityPage
   ],
-  providers: [WeatherService]
+  providers: [WeatherService, CityListService]
   //providers:[{provide: ErrorHandler, useClass: IonicErrorHandler}]
 })
 export class AppModule {}

@@ -6,9 +6,10 @@ import { Events } from 'ionic-angular';
 export class WeatherService {
     private http: any;
     private data: any;
-                               //"http://api.openweathermap.org/data/2.5/forecast          /city?id=524901                 &appid={APIKEY}
-    private url_cidade: string = "http://api.openweathermap.org/data/2.5/forecast?q=CIDADE&units=metric&appid=7d29c85b415d4474c680c00a31a60eb9";
-    private url_coords: string = "http://api.openweathermap.org/data/2.5/forecast?lat=LATITUDE&lon=LONGITUDE&units=metric&appid=7d29c85b415d4474c680c00a31a60eb9";
+    private readonly WEATHER_API_KEY: string = "7d29c85b415d4474c680c00a31a60eb9";
+    private url_cidade: string = "http://api.openweathermap.org/data/2.5/forecast?q={CIDADE}&units=metric&appid=";
+    private url_coords: string = "http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&units=metric&appid=";
+    private url_google_geocoding: string = "https://maps.googleapis.com/maps/api/geocode/json?address={ENDERECO}"
 
     public temp: any;
 
@@ -18,20 +19,25 @@ export class WeatherService {
     }
 
     obterPrevisaoPorCidade(nomeDaCidade: string) {
-        var url = this.url_cidade.replace('CIDADE', nomeDaCidade);
+        var url_geo = this.url_google_geocoding.replace('{ENDERECO}', nomeDaCidade);
 
-        this.http.get(url)
+        // primeiro consumimos API do Google para obter coordenadas a partir do endereço
+        this.http.get(url_geo)
             .subscribe(res => {
-                this.data = res.json();
-                this.temp = this.data.list[0].main.temp;
-                console.log("RESULTADO: ", this.data);
+                let address: any = res.json();
+                let latitude: number = address.results[0].geometry.location.lat;
+                let longitude: number = address.results[0].geometry.location.lng;
+
+                console.log("GEOCODE: ", latitude, longitude);
+
+                this.obterPrevisaoPorCoordenadas(latitude, longitude);
             }, error => {
                 console.log(error);
             });
     }
 
     obterPrevisaoPorCoordenadas(latitude: any, longitude: any) {
-      var url = this.url_coords.replace('LATITUDE', latitude).replace('LONGITUDE', longitude);
+      var url = this.url_coords.replace('{LATITUDE}', latitude).replace('{LONGITUDE}', longitude) + this.WEATHER_API_KEY;
 
       this.http.get(url)
           .subscribe(res => {
