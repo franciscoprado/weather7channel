@@ -7,7 +7,6 @@ export class WeatherService {
     private http: any;
     private data: any;
     private readonly WEATHER_API_KEY: string = "7d29c85b415d4474c680c00a31a60eb9";
-    private url_cidade: string = "http://api.openweathermap.org/data/2.5/forecast?q={CIDADE}&units=metric&appid=";
     private url_coords: string = "http://api.openweathermap.org/data/2.5/forecast?lat={LATITUDE}&lon={LONGITUDE}&units=metric&appid=";
     private url_google_geocoding: string = "https://maps.googleapis.com/maps/api/geocode/json?address={ENDERECO}"
 
@@ -20,6 +19,8 @@ export class WeatherService {
 
     obterPrevisaoPorCidade(nomeDaCidade: string) {
         var url_geo = this.url_google_geocoding.replace('{ENDERECO}', nomeDaCidade);
+
+        this.events.publish('loadingForecast', '200');
 
         // primeiro consumimos API do Google para obter coordenadas a partir do endereço
         this.http.get(url_geo)

@@ -18,7 +18,14 @@ export class HomePage {
 
     this.addChangeCityEventListener(events);
     this.addPreloaderEventListener(events);
+    this.addLoadingForecastEventListener(events);
     this.addGeolocationSupport();
+  }
+
+  addLoadingForecastEventListener(events: Events) {
+    events.subscribe('loadingForecast', () => {
+      this.generatePreloader();
+    });
   }
 
   addChangeCityEventListener(events: Events) {
@@ -34,16 +41,20 @@ export class HomePage {
   }
 
   addPreloaderEventListener(events: Events) {
-    this.loader = this.loadingCtrl.create({
-      content: "Aguarde, carregando previsão..."
-    });
-    this.loader.present();
+    this.generatePreloader();
 
     events.subscribe('forecastLoaded', (status) => {
       if (status == '200') {
         this.loader.dismiss();
       }
     });
+  }
+
+  generatePreloader() {
+    this.loader = this.loadingCtrl.create({
+      content: "Aguarde, carregando previsão..."
+    });
+    this.loader.present();
   }
 
   addGeolocationSupport() {
