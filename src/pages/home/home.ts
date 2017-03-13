@@ -11,7 +11,11 @@ import { Geolocation, SQLite } from 'ionic-native';
 export class HomePage {
   private tempo: any;
   private loader: any;
+  private latitude: number;
+  private longitude: number;
   private use_geo: boolean = true;
+  private update_limit: number = 60;
+  private timer: number = 0;  
 
   public already_bookmarked: boolean;
   public database: SQLite;
@@ -24,6 +28,7 @@ export class HomePage {
     this.addPreloaderEventListener(events);
     this.addLoadingForecastEventListener(events);
     this.addGeolocationSupport();
+    this.startTimer();
   }
 
   initDatabase() {
@@ -126,7 +131,7 @@ export class HomePage {
     let options = {
       enableHighAccuracy: true,
       timeout: 3000,
-      maximumAge: 3000
+      maximumAge: 30000
     };
     let watch = Geolocation.watchPosition(options);
 
@@ -136,9 +141,33 @@ export class HomePage {
       // data.coords.longitude
       console.log("COORDENADAS: ", data.coords);
 
-      if (this.use_geo)
-        this.tempo.obterPrevisaoPorCoordenadas(data.coords.latitude, data.coords.longitude);
+      this.events.publish('coordinatesUpdated', data.coords.latitude, data.coords.longitude);
+      
+      // atualização somente a cada 60 segundos
+      if (this.use_geo) {
+        this.latitude = data.coords.latitude;
+        this.longitude = data.coords.longitude;        
+      }
     });
+  }
+
+  startTimer() {
+    setInterval(tick, 1000);
+    let self = this;
+
+    function tick() {
+      // reinicia o timer caso passe do limite
+      if (self.timer > self.update_limit) {
+        self.timer = 0;
+      }
+
+      // atualiza caso tenha completado o ciclo, ou então é o início da execução do app
+      if (self.timer == 0) {
+        self.tempo.obterPrevisaoPorCoordenadas(self.latitude, self.longitude);
+      }
+
+      self.timer += 1;
+    }
   }
 
 }
