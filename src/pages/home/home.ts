@@ -11,11 +11,12 @@ import { Geolocation, SQLite } from 'ionic-native';
 export class HomePage {
   private tempo: any;
   private loader: any;
+  private city: string;
   private latitude: number;
   private longitude: number;
   private use_geo: boolean = true;
   private update_limit: number = 60;
-  private timer: number = 0;  
+  private timer: number = 0;
 
   public already_bookmarked: boolean;
   public database: SQLite;
@@ -87,6 +88,7 @@ export class HomePage {
 
   addChangeCityEventListener(events: Events) {
     events.subscribe('changeCity', (city) => {
+      this.city = city;
       this.tempo.obterPrevisaoPorCidade(city);
       this.desabilitarPrevisaoPorGeolocalizacao();
       this.checkIsBookmarked(city);
@@ -142,11 +144,11 @@ export class HomePage {
       console.log("COORDENADAS: ", data.coords);
 
       this.events.publish('coordinatesUpdated', data.coords.latitude, data.coords.longitude);
-      
+
       // atualização somente a cada 60 segundos
       if (this.use_geo) {
         this.latitude = data.coords.latitude;
-        this.longitude = data.coords.longitude;        
+        this.longitude = data.coords.longitude;
       }
     });
   }
@@ -163,7 +165,12 @@ export class HomePage {
 
       // atualiza caso tenha completado o ciclo, ou então é o início da execução do app
       if (self.timer == 0) {
-        self.tempo.obterPrevisaoPorCoordenadas(self.latitude, self.longitude);
+        if (self.use_geo) {
+          self.tempo.obterPrevisaoPorCoordenadas(self.latitude, self.longitude);
+        }
+        else {
+          self.tempo.obterPrevisaoPorCidade(self.city);
+        }
       }
 
       self.timer += 1;
